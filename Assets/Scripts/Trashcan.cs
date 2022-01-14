@@ -23,7 +23,7 @@ public class Trashcan : MonoBehaviour, IInteractable
 
     public int GetInteractableDuration()
     {
-        return 30;
+        return 2;
     }
 
     public float GetXPosition()

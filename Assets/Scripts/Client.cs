@@ -7,14 +7,15 @@ public class Client : MonoBehaviour
 {
     public Chair assignedChair;
     public bool seated = false;
+    private bool wantsToOrder = false;
+    private bool finished = false;
+    
     internal bool flipX = false;
     private float speed = 3.0f;
     internal int patience;
     public Animator animator;
     internal System.Random random;
     private Order order;
-    //TODO: Order animatie speelt nog voor iedereen zit omdat de Hasordered altijd true returned. Dit is omdat een enum geen null waarde kan hebben.
-    // Dit moet dus vervangen worden met een bool of iets anders
     void Start()
     {
         patience = 200;
@@ -22,7 +23,6 @@ public class Client : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(order.ToString());
         if (assignedChair == null) return;
         
         if (!seated && !this.transform.parent.GetComponent<ClientGroup>().finished)
@@ -31,26 +31,22 @@ public class Client : MonoBehaviour
         }
         else
         {
-            if (flipX)
-            {
-                gameObject.GetComponent<SpriteRenderer>().flipX = true;
-            }
-            if (order != null)
-            {
-                animator.SetBool("order", true);
-            }
-            if (this.transform.parent.GetComponent<ClientGroup>().seated)
-            {
-                //Order();
-            }
+            gameObject.GetComponent<SpriteRenderer>().flipX = flipX;
         }
 
-        if (this.transform.parent.GetComponent<ClientGroup>().finished)
+        if (finished)
         {
             Leave();
         }
 
+        SetAnimatorParameters();
+    }
+
+    private void SetAnimatorParameters()
+    {
+        animator.SetBool("seated", seated);
         animator.SetInteger("patience", patience);
+        animator.SetBool("order", wantsToOrder);
     }
 
     private void MoveToChair()
@@ -63,18 +59,18 @@ public class Client : MonoBehaviour
         if (Mathf.Abs(transform.position.x - assignedChair.transform.position.x) <= 0.001f)
         {
             seated = true;
-            animator.SetBool("seated", true);
             transform.position = new Vector2(transform.position.x, transform.position.y + 0.3f);
         }
     }
 
     public Order CreateOrder()
     {
-        animator.SetBool("order", true);
+        wantsToOrder = true;
         Array foodTypes = Enum.GetValues(typeof(Consumables.FoodType));
+        Array drinkTypes = Enum.GetValues(typeof(Consumables.DrinkType));
         Consumables.FoodType chosenFood = (Consumables.FoodType)foodTypes.GetValue(random.Next(foodTypes.Length));
-        order = new Order(chosenFood);
-        Debug.Log("Creating order: " + order.ToString());
+        Consumables.DrinkType chosenDrink = (Consumables.DrinkType)drinkTypes.GetValue(random.Next(drinkTypes.Length));
+        order = new Order(chosenFood, chosenDrink);
         return order;
     }
 
@@ -90,26 +86,25 @@ public class Client : MonoBehaviour
         }
     }
 
-    private void Leave()
+    public void Leave()
     {
-        if (seated)
-        {
-            seated = false;
-            animator.SetBool("seated", false);
-            transform.position = new Vector2(transform.position.x, transform.position.y - 0.3f);
-        }
-
-        flipX = true;
-
         float step = Time.deltaTime * speed;
         Vector2 movePos = new Vector2(transform.position.x - 1f * step, transform.position.y);
         transform.position = movePos;
 
-        if(transform.position.x < -12f)
+        if (transform.position.x < -12f)
         {
             this.transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
             Destroy(gameObject);
         }
+    }
+    public void FinishVisit()
+    {
+        wantsToOrder = false;
+        seated = false;
+        transform.position = new Vector2(transform.position.x, transform.position.y - 0.3f);
+        flipX = true;
+        finished = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

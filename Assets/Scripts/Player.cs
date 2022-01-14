@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Player : MonoBehaviour
     private float speed = 5.0f;
     private bool interacting = false;
     private IInteractable interactable;
-    private const int DEFAULT_INTERACT_TIME = 10;
+    private const int DEFAULT_INTERACT_TIME = 1;
     internal int interactDuration = DEFAULT_INTERACT_TIME;
     public Animator animator;
     public FoodMenu foodMenu;
@@ -44,21 +45,6 @@ public class Player : MonoBehaviour
         else
         {
             tray.EnableFoodSprite();
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (interacting)
-        {
-            animator.SetBool("interacting", true);
-            interactDuration--;
-            if(interactDuration <= 0)
-            {
-                interacting = false;
-                animator.SetBool("interacting", false);
-                interactDuration = DEFAULT_INTERACT_TIME;
-            }
         }
     }
 
@@ -108,6 +94,7 @@ public class Player : MonoBehaviour
     private void Interact()
     {
         interactDuration = interactable.GetInteractableDuration();
+        StartCoroutine(InteractDurationLogic(interactable.GetInteractableDuration()));
         animator.SetBool("walking", false);
         interacting = true;
 
@@ -136,10 +123,7 @@ public class Player : MonoBehaviour
                 Table table = (Table)interactable;
                 if(table.orders.Count > 0)
                 {
-                    foreach(Order order in table.TakeOrder())
-                    {
-                        Debug.Log(order.ToString());
-                    }
+                    table.TakeOrder();
                 }
                 break;
         }
@@ -148,5 +132,15 @@ public class Player : MonoBehaviour
     private bool AtTarget()
     {
         return Mathf.Abs(transform.position.x - xTarget) <= 0.01f;
+    }
+
+    IEnumerator InteractDurationLogic(int duration)
+    {
+        animator.SetBool("interacting", true);
+
+        yield return new WaitForSeconds(duration);
+
+        interacting = false;
+        animator.SetBool("interacting", false);
     }
 }

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Table : MonoBehaviour, IInteractable
 {
     public List<Chair> chairs;
+    public TableUI ui;
     internal Player player;
     internal bool available = true;
     internal int interactDuration;
@@ -19,27 +21,38 @@ public class Table : MonoBehaviour, IInteractable
         {
             chairs.Add(chair);
         }
+        ui.xPositionTable = transform.position.x;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (available)
+        if (orders.Count <= 0)
         {
-            interactDuration = 10;
+            interactDuration = 1;
         }
+    }
+
+    public void SetOrder(List<Order> orders)
+    {
+        this.orders = orders;
+        ui.RequestOrder();
+        interactDuration = 2 * orders.Count;
     }
 
     public void ClearClientGroupInfo()
     {
         available = true;
         orders.Clear();
+        Debug.Log(orders.Count);
+        ui.Reset();
     }
 
     public List<Order> TakeOrder()
     {
-        if(orders != null)
+        if(orders.Count > 0)
         {
+            ui.NoteOrders(orders);
             return orders;
         }
         else

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClientGroup : MonoBehaviour
 {
@@ -47,26 +48,48 @@ public class ClientGroup : MonoBehaviour
             if(seatedClients >= clients.Count)
             {
                 seated = true;
-                assignedTable.interactDuration = 60 * clients.Count;
                 StartCoroutine(PatienceCalculation());
-            }
-            else
-            {
-                assignedTable.interactDuration = 10;
             }
         }
         else if(assignedTable.orders.Count < clients.Count)
         {
+            List<Order> orders = new List<Order>();
             foreach(Client c in clients)
             {
-                assignedTable.orders.Add(c.GetOrder());
+                orders.Add(c.GetOrder());
             }
+            assignedTable.SetOrder(orders);
         }
 
         if(patience <= 0 && !finished)
         {
             FinishVisit();
         }
+    }
+
+    private bool ManageChairs() //TODO: Refactor and implement proper systems to remove clutter in update function and have better code structure
+    {
+        int seatedClients = 0;
+
+        foreach (Client c in clients)
+        {
+            if (c.assignedChair == null)
+            {
+                AssignChairs();
+            }
+            if (c.seated)
+            {
+                seatedClients++;
+            }
+        }
+
+        if (seatedClients >= clients.Count)
+        {
+            seated = true;
+            StartCoroutine(PatienceCalculation());
+        }
+
+        return false;
     }
 
     private void AssignChairs()
@@ -110,6 +133,11 @@ public class ClientGroup : MonoBehaviour
     private void FinishVisit()
     {
         StopCoroutine(PatienceCalculation());
+
+        foreach(Client client in clients)
+        {
+            client.FinishVisit();
+        }
 
         seated = false;
         finished = true;
