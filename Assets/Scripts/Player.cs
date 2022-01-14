@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
                 break;
             case InteractableEnum.Interactables.Table:
                 Table table = (Table)interactable;
-                if(table.orders.Count > 0)
+                if(!table.HasOrdersTaken() && table.HasOrders())
                 {
                     table.TakeOrder();
                 }

@@ -62,8 +62,6 @@ public class Restaurant : MonoBehaviour
                 clientGroup.clients = newClients;
                 clientGroup.random = random;
                 clientGroups.Add(clientGroup);
-
-                table.available = false;
             }
             yield return new WaitForSeconds(10);
         }

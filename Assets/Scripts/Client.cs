@@ -5,8 +5,7 @@ using System;
 
 public class Client : MonoBehaviour
 {
-    public Chair assignedChair;
-    public bool seated = false;
+    private bool seated = false;
     private bool wantsToOrder = false;
     private bool finished = false;
     private bool flipX = false;
@@ -15,6 +14,7 @@ public class Client : MonoBehaviour
     private const int X_POSITION_TO_DESTOY = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
+    internal Chair assignedChair;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     internal System.Random random;
@@ -66,6 +66,11 @@ public class Client : MonoBehaviour
         }
     }
 
+    public bool IsSeated()
+    {
+        return seated;
+    }
+
     public Order CreateOrder()
     {
         wantsToOrder = true;
@@ -77,7 +82,7 @@ public class Client : MonoBehaviour
         return order;
     }
 
-    public Order GetOrder()
+    public Order TakeOrder()
     {
         if (order != null)
         {
@@ -89,6 +94,11 @@ public class Client : MonoBehaviour
         }
     }
 
+    public void OrderIsTaken()
+    {
+        wantsToOrder = false;
+    }
+
     public void Leave()
     {
         float step = Time.deltaTime * speed;
@@ -97,7 +107,7 @@ public class Client : MonoBehaviour
 
         if (transform.position.x < X_POSITION_TO_DESTOY)
         {
-            this.transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
+            transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
             Destroy(gameObject);
         }
     }
@@ -108,6 +118,6 @@ public class Client : MonoBehaviour
         transform.position = new Vector2(transform.position.x, transform.position.y - Y_FLOOR_CHAIR_DIFFERENCE);
         flipX = true;
         finished = true;
-        assignedChair.available = true;
+        transform.parent.GetComponent<ClientGroup>().assignedTable.availableChairs.Add(assignedChair);
     }
 }

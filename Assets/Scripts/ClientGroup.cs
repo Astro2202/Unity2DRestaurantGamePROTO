@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class ClientGroup : MonoBehaviour
 {
     public Table assignedTable;
-    internal bool seated = false;
-    internal bool finished = false;
+    private bool allClientsSeated = false;
+    private bool finished = false;
     internal System.Random random;
-    public List<Client> clients;
+    internal List<Client> clients;
     private int patience = 15; //default = 200
     // Start is called before the first frame update
     void Start()
@@ -27,106 +27,77 @@ public class ClientGroup : MonoBehaviour
                 Destroy(gameObject);
             }
             return;
+
         }
 
-        if (!seated)
+        if (!allClientsSeated)
         {
-            int seatedClients = 0;
-
-            foreach(Client c in clients)
-            {
-                if(c.assignedChair == null)
-                {
-                    AssignChairs();
-                }
-                if (c.seated)
-                {
-                    seatedClients++;
-                }
-            }
-
-            if(seatedClients >= clients.Count)
-            {
-                seated = true;
-                StartCoroutine(PatienceCalculation());
-            }
+            ManageChairs();
         }
-        else if(assignedTable.orders.Count < clients.Count)
+        else if(!assignedTable.HasOrders())
         {
-            List<Order> orders = new List<Order>();
-            foreach(Client c in clients)
-            {
-                orders.Add(c.GetOrder());
-            }
-            assignedTable.SetOrder(orders);
+            ManageOrders();
         }
 
-        if(patience <= 0 && !finished)
+        if (assignedTable.HasOrdersTaken())
+        {
+            foreach(Client client in clients)
+            {
+                client.OrderIsTaken();
+            }
+        }
+
+        if(patience <= 0)
         {
             FinishVisit();
         }
     }
 
-    private bool ManageChairs() //TODO: Refactor and implement proper systems to remove clutter in update function and have better code structure
+    private void ManageOrders()
+    {
+        List<Order> orders = new List<Order>();
+        foreach (Client c in clients)
+        {
+            orders.Add(c.TakeOrder());
+        }
+        assignedTable.SetOrder(orders);
+    }
+
+    private void ManageChairs()
     {
         int seatedClients = 0;
 
-        foreach (Client c in clients)
+        foreach(Client client in clients)
         {
-            if (c.assignedChair == null)
+            if (!client.assignedChair)
             {
-                AssignChairs();
+                AssignChair(client);
             }
-            if (c.seated)
+            else if (client.IsSeated())
             {
                 seatedClients++;
             }
         }
 
-        if (seatedClients >= clients.Count)
+        if(seatedClients == clients.Count)
         {
-            seated = true;
+            allClientsSeated = true;
             StartCoroutine(PatienceCalculation());
         }
-
-        return false;
     }
 
-    private void AssignChairs()
+    private bool AssignChair(Client client)
     {
-        bool availableChairs = false;
-
-        foreach (Chair c in assignedTable.chairs)
+        if(assignedTable.availableChairs.Count > 0)
         {
-            if (c.available)
-            {
-                availableChairs = true;
-            }
+            Chair chair = assignedTable.availableChairs[random.Next(assignedTable.availableChairs.Count)];
+            assignedTable.availableChairs.Remove(chair);
+            client.assignedChair = chair;
+            return true;
         }
-
-        if (!availableChairs)
+        else
         {
-            FinishVisit();
-            return;
-        }
-
-        foreach (Client client in clients)
-        {
-            while (client.assignedChair == null)
-            {
-                Chair chair = assignedTable.chairs[random.Next(assignedTable.chairs.Count)];
-
-                if (chair.available)
-                {
-                    client.assignedChair = chair;
-                    chair.available = false;
-
-                    //if (chair.transform.position.x > assignedTable.transform.position.x)
-                    //{
-                    //    client.flipX = true;
-                    //}
-                }
-            }
+            return false;
         }
     }
 
@@ -139,17 +110,15 @@ public class ClientGroup : MonoBehaviour
             client.FinishVisit();
         }
 
-        seated = false;
+        allClientsSeated = false;
         finished = true;
 
-        assignedTable.ClearClientGroupInfo();
-
-        this.transform.parent.GetComponent<Restaurant>().availableTables.Add(assignedTable);
+        assignedTable.Reset();
     }
 
     IEnumerator PatienceCalculation()
     {
-        while (seated)
+        while (allClientsSeated)
         {
             if(patience > 0)
             {

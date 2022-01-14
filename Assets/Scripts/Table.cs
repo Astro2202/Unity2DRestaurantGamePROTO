@@ -5,21 +5,22 @@ using UnityEngine.UI;
 
 public class Table : MonoBehaviour, IInteractable
 {
-    public List<Chair> chairs;
+    public List<Chair> availableChairs;
     public TableUI ui;
     internal Player player;
-    internal bool available = true;
     internal int interactDuration;
     internal List<Order> orders;
+    private bool hasOrders = false;
+    private bool hasOrdersTaken = false;
 
     // Start is called before the first frame update
     void Start()
     {
         orders = new List<Order>();
-        chairs = new List<Chair>();
+        availableChairs = new List<Chair>();
         foreach(Chair chair in GetComponentsInChildren<Chair>())
         {
-            chairs.Add(chair);
+            availableChairs.Add(chair);
         }
         ui.xPositionTable = transform.position.x;
     }
@@ -27,38 +28,42 @@ public class Table : MonoBehaviour, IInteractable
     // Update is called once per frame
     void Update()
     {
-        if (orders.Count <= 0)
-        {
-            interactDuration = 1;
-        }
+
     }
 
     public void SetOrder(List<Order> orders)
     {
         this.orders = orders;
-        ui.RequestOrder();
         interactDuration = 2 * orders.Count;
+        hasOrders = true;
+        ui.RequestOrder();
     }
 
-    public void ClearClientGroupInfo()
+    public void Reset()
     {
-        available = true;
+        Debug.Log("Reset table");
         orders.Clear();
-        Debug.Log(orders.Count);
+        transform.parent.GetComponent<Restaurant>().availableTables.Add(this);
+        hasOrders = false;
+        hasOrdersTaken = false;
         ui.Reset();
+    }
+
+    public bool HasOrders()
+    {
+        return hasOrders;
+    }
+
+    public bool HasOrdersTaken()
+    {
+        return hasOrdersTaken;
     }
 
     public List<Order> TakeOrder()
     {
-        if(orders.Count > 0)
-        {
-            ui.NoteOrders(orders);
-            return orders;
-        }
-        else
-        {
-            return null;
-        }
+        hasOrdersTaken = true;
+        ui.NoteOrders(orders);
+        return orders;
     }
 
     public InteractableEnum.Interactables GetInteractable()
@@ -68,6 +73,14 @@ public class Table : MonoBehaviour, IInteractable
 
     public int GetInteractableDuration()
     {
+        if (hasOrders && !hasOrdersTaken)
+        {
+            interactDuration = orders.Count * 2;
+        }
+        else
+        {
+            interactDuration = 1;
+        }
         return interactDuration;
     }
 
