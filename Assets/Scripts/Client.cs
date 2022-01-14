@@ -9,36 +9,35 @@ public class Client : MonoBehaviour
     public bool seated = false;
     private bool wantsToOrder = false;
     private bool finished = false;
-    
-    internal bool flipX = false;
+    private bool flipX = false;
     private float speed = 3.0f;
-    internal int patience;
+    internal int patience = 200;
+    private const int X_POSITION_TO_DESTOY = -12;
+    private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
+    private const float CHAIR_POSITION_ACCURACY = 0.01f;
     public Animator animator;
+    public SpriteRenderer spriteRenderer;
     internal System.Random random;
     private Order order;
     void Start()
     {
-        patience = 200;
+
     }
 
     void Update()
     {
         if (assignedChair == null) return;
-        
-        if (!seated && !this.transform.parent.GetComponent<ClientGroup>().finished)
-        {
-            MoveToChair();
-        }
-        else
-        {
-            gameObject.GetComponent<SpriteRenderer>().flipX = flipX;
-        }
 
         if (finished)
         {
             Leave();
         }
+        else if (!seated)
+        {
+            MoveToChair();
+        }
 
+        spriteRenderer.flipX = flipX;
         SetAnimatorParameters();
     }
 
@@ -56,10 +55,14 @@ public class Client : MonoBehaviour
         Vector2 movePos = new Vector2(transform.position.x + direction * step, transform.position.y);
         transform.position = movePos;
 
-        if (Mathf.Abs(transform.position.x - assignedChair.transform.position.x) <= 0.001f)
+        if (Mathf.Abs(transform.position.x - assignedChair.transform.position.x) <= CHAIR_POSITION_ACCURACY)
         {
             seated = true;
-            transform.position = new Vector2(transform.position.x, transform.position.y + 0.3f);
+            transform.position = new Vector2(assignedChair.transform.position.x, transform.position.y + Y_FLOOR_CHAIR_DIFFERENCE);
+            if(assignedChair.transform.position.x > assignedChair.transform.parent.GetComponentInChildren<Table>().transform.position.x)
+            {
+                flipX = true;
+            }
         }
     }
 
@@ -89,10 +92,10 @@ public class Client : MonoBehaviour
     public void Leave()
     {
         float step = Time.deltaTime * speed;
-        Vector2 movePos = new Vector2(transform.position.x - 1f * step, transform.position.y);
+        Vector2 movePos = new Vector2(transform.position.x - 1f * step, transform.position.y); //-1f indicating direction to the left
         transform.position = movePos;
 
-        if (transform.position.x < -12f)
+        if (transform.position.x < X_POSITION_TO_DESTOY)
         {
             this.transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
             Destroy(gameObject);
@@ -102,20 +105,9 @@ public class Client : MonoBehaviour
     {
         wantsToOrder = false;
         seated = false;
-        transform.position = new Vector2(transform.position.x, transform.position.y - 0.3f);
+        transform.position = new Vector2(transform.position.x, transform.position.y - Y_FLOOR_CHAIR_DIFFERENCE);
         flipX = true;
         finished = true;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.tag == "Player")
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
-        }
-        if (collision.gameObject.tag == "Client")
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
-        }
+        assignedChair.available = true;
     }
 }

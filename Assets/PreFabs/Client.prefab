@@ -122,6 +122,7 @@ MonoBehaviour:
   assignedChair: {fileID: 0}
   seated: 0
   animator: {fileID: -9014943181267133084}
+  spriteRenderer: {fileID: 1867259553615552994}
 --- !u!61 &-5363899402523570879
 BoxCollider2D:
   m_ObjectHideFlags: 0

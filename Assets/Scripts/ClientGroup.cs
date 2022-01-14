@@ -121,10 +121,10 @@ public class ClientGroup : MonoBehaviour
                     client.assignedChair = chair;
                     chair.available = false;
 
-                    if (chair.transform.position.x > assignedTable.transform.position.x)
-                    {
-                        client.flipX = true;
-                    }
+                    //if (chair.transform.position.x > assignedTable.transform.position.x)
+                    //{
+                    //    client.flipX = true;
+                    //}
                 }
             }
         }
@@ -141,11 +141,6 @@ public class ClientGroup : MonoBehaviour
 
         seated = false;
         finished = true;
-
-        foreach (Chair c in assignedTable.chairs)
-        {
-            c.available = true;
-        }
 
         assignedTable.ClearClientGroupInfo();
 
