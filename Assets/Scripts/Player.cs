@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
                 Table table = (Table)interactable;
                 if(!table.HasOrdersTaken() && table.HasOrders())
                 {
-                    table.TakeOrder();
+                    table.GetOrders();
                 }
                 break;
         }
