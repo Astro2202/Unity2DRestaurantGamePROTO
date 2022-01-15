@@ -8,7 +8,7 @@ public class Table : MonoBehaviour, IInteractable
     public List<Chair> availableChairs;
     public TableUI ui;
     internal Player player;
-    internal int interactDuration;
+    internal float interactDuration;
     internal List<Order> orders;
     private bool hasOrders = false;
     private bool hasOrdersTaken = false;
@@ -96,10 +96,7 @@ public class Table : MonoBehaviour, IInteractable
     {
         clientGroup.PausePatience(GetInteractableDuration());
         hasOrdersTaken = true;
-        foreach(Client client in clientGroup.clients)
-        {
-            client.OrderIsTaken();
-        }
+        clientGroup.ConfirmOrder();
         ui.NoteOrders(orders);
         return orders;
     }
@@ -109,7 +106,7 @@ public class Table : MonoBehaviour, IInteractable
         return InteractableEnum.Interactables.Table;
     }
 
-    public int GetInteractableDuration()
+    public float GetInteractableDuration()
     {
         if (hasOrders && !hasOrdersTaken)
         {
@@ -117,7 +114,7 @@ public class Table : MonoBehaviour, IInteractable
         }
         else
         {
-            interactDuration = 1;
+            interactDuration = 0.5f;
         }
         return interactDuration;
     }

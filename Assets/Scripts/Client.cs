@@ -12,6 +12,7 @@ public class Client : MonoBehaviour
     internal bool canLosePatience = true;
     private float speed = 3.0f;
     internal int patience = 10; // Default = 200(s)
+    private const int ADDED_PATIENCE_AT_INTERACT = 10; // Default value to be chosen
     private const int X_POSITION_TO_DESTOY = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
@@ -96,9 +97,10 @@ public class Client : MonoBehaviour
         }
     }
 
-    public void OrderIsTaken()
+    public void ConfirmOrder()
     {
         wantsToOrder = false;
+        patience += ADDED_PATIENCE_AT_INTERACT;
     }
 
     public void Leave()
@@ -129,7 +131,6 @@ public class Client : MonoBehaviour
         {
             if (canLosePatience)
             {
-                Debug.Log("Losing patience");
                 if (patience > 0)
                 {
                     patience--;

@@ -9,8 +9,8 @@ public class Player : MonoBehaviour
     private float speed = 5.0f;
     private bool interacting = false;
     private IInteractable interactable;
-    private const int DEFAULT_INTERACT_TIME = 1;
-    internal int interactDuration = DEFAULT_INTERACT_TIME;
+    private const float DEFAULT_INTERACT_TIME = 0.5f;
+    internal float interactDuration = DEFAULT_INTERACT_TIME;
     public Animator animator;
     public FoodMenu foodMenu;
     private List<Food> carriedFood;
@@ -134,7 +134,7 @@ public class Player : MonoBehaviour
         return Mathf.Abs(transform.position.x - xTarget) <= 0.01f;
     }
 
-    IEnumerator InteractDurationLogic(int duration)
+    IEnumerator InteractDurationLogic(float duration)
     {
         animator.SetBool("interacting", true);
 

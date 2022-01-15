@@ -32,7 +32,7 @@ public class Kitchen : MonoBehaviour, IInteractable
         return InteractableEnum.Interactables.Kitchen;
     }
 
-    public int GetInteractableDuration()
+    public float GetInteractableDuration()
     {
         return 3;
     }

@@ -6,5 +6,5 @@ public interface IInteractable
 {
     float GetXPosition();
     InteractableEnum.Interactables GetInteractable();
-    int GetInteractableDuration();
+    float GetInteractableDuration();
 }

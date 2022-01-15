@@ -57,6 +57,14 @@ public class ClientGroup : MonoBehaviour
         return orders;
     }
 
+    public void ConfirmOrder()
+    {
+        foreach(Client c in clients)
+        {
+            c.ConfirmOrder();
+        }
+    }
+
     public void ManageChairs(List<Chair> chairs)
     {
         int seatedClients = 0;
@@ -104,12 +112,12 @@ public class ClientGroup : MonoBehaviour
         finished = true;
     }
 
-    public void PausePatience(int seconds)
+    public void PausePatience(float seconds)
     {
         StartCoroutine(PausePatienceCalculation(seconds));
     }
 
-    IEnumerator PausePatienceCalculation(int seconds)
+    IEnumerator PausePatienceCalculation(float seconds)
     {
         foreach(Client client in clients)
         {

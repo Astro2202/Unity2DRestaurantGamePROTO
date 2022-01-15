@@ -21,7 +21,7 @@ public class Trashcan : MonoBehaviour, IInteractable
         return InteractableEnum.Interactables.Trashcan;
     }
 
-    public int GetInteractableDuration()
+    public float GetInteractableDuration()
     {
         return 2;
     }
