@@ -9,9 +9,11 @@ public class Client : MonoBehaviour
     private bool wantsToOrder = false;
     private bool finished = false;
     private bool flipX = false;
+    internal bool canLosePatience = true;
     private float speed = 3.0f;
-    internal int patience = 200;
-    private const int X_POSITION_TO_DESTOY = -12;
+    internal int patience = 10; // Default = 200(s)
+    private const int ADDED_PATIENCE_AT_INTERACT = 10; // Default value to be chosen
+    private const int X_POSITION_TO_DESPAWN = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
     internal Chair assignedChair;
@@ -71,7 +73,7 @@ public class Client : MonoBehaviour
         return seated;
     }
 
-    public Order CreateOrder()
+    public Order SetOrder()
     {
         wantsToOrder = true;
         Array foodTypes = Enum.GetValues(typeof(Consumables.FoodType));
@@ -79,10 +81,11 @@ public class Client : MonoBehaviour
         Consumables.FoodType chosenFood = (Consumables.FoodType)foodTypes.GetValue(random.Next(foodTypes.Length));
         Consumables.DrinkType chosenDrink = (Consumables.DrinkType)drinkTypes.GetValue(random.Next(drinkTypes.Length));
         order = new Order(chosenFood, chosenDrink);
+        StartCoroutine(PatienceCalculation());
         return order;
     }
 
-    public Order TakeOrder()
+    public Order GetOrder()
     {
         if (order != null)
         {
@@ -90,13 +93,14 @@ public class Client : MonoBehaviour
         }
         else
         {
-            return CreateOrder();
+            return SetOrder();
         }
     }
 
-    public void OrderIsTaken()
+    public void ConfirmOrder()
     {
         wantsToOrder = false;
+        patience += ADDED_PATIENCE_AT_INTERACT;
     }
 
     public void Leave()
@@ -105,7 +109,7 @@ public class Client : MonoBehaviour
         Vector2 movePos = new Vector2(transform.position.x - 1f * step, transform.position.y); //-1f indicating direction to the left
         transform.position = movePos;
 
-        if (transform.position.x < X_POSITION_TO_DESTOY)
+        if (transform.position.x < X_POSITION_TO_DESPAWN)
         {
             transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
             Destroy(gameObject);
@@ -118,6 +122,21 @@ public class Client : MonoBehaviour
         transform.position = new Vector2(transform.position.x, transform.position.y - Y_FLOOR_CHAIR_DIFFERENCE);
         flipX = true;
         finished = true;
-        transform.parent.GetComponent<ClientGroup>().assignedTable.availableChairs.Add(assignedChair);
+        StopAllCoroutines();
+    }
+
+    IEnumerator PatienceCalculation()
+    {
+        while (seated)
+        {
+            if (canLosePatience)
+            {
+                if (patience > 0)
+                {
+                    patience--;
+                }
+            }
+            yield return new WaitForSeconds(1);
+        }
     }
 }

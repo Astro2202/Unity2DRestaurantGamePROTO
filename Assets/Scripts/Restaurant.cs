@@ -24,6 +24,7 @@ public class Restaurant : MonoBehaviour
         }
         GetComponentInChildren<Kitchen>().player = GetComponentInChildren<Player>();
         GetComponentInChildren<Trashcan>().player = GetComponentInChildren<Player>();
+        GetComponentInChildren<Fridge>().player = GetComponentInChildren<Player>();
         StartCoroutine(ClientSpawner());
     }
 
@@ -43,7 +44,6 @@ public class Restaurant : MonoBehaviour
                 clientGroup.transform.parent = transform;
 
                 Table table = availableTables[random.Next(availableTables.Count)];
-                clientGroup.assignedTable = table;
                 availableTables.Remove(table);
 
                 List<Client> newClients = new List<Client>();
@@ -61,6 +61,8 @@ public class Restaurant : MonoBehaviour
                 
                 clientGroup.clients = newClients;
                 clientGroup.random = random;
+                clientGroup.transform.parent = table.transform;
+                table.AssignClientGroup(clientGroup);
                 clientGroups.Add(clientGroup);
             }
             yield return new WaitForSeconds(10);

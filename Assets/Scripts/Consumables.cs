@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Consumables 
 {
-    public enum FoodType { Steak, Spaghetti, Salad, Soup };
-    public enum DrinkType { Coffee, Water, Wine, Cola };
+    public enum FoodType { Steak, Pasta, Salad, Omlette };
+    public enum DrinkType { Lime, Orange, Coke };
 }
 

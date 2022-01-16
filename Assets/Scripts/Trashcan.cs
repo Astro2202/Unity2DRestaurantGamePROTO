@@ -21,7 +21,7 @@ public class Trashcan : MonoBehaviour, IInteractable
         return InteractableEnum.Interactables.Trashcan;
     }
 
-    public int GetInteractableDuration()
+    public float GetInteractableDuration()
     {
         return 2;
     }
@@ -33,7 +33,6 @@ public class Trashcan : MonoBehaviour, IInteractable
 
     private void OnMouseDown()
     {
-        Debug.Log("Clicked on trashcan");
         player.GoInteract(this);
     }
 }

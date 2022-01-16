@@ -5,10 +5,7 @@ using UnityEngine.UI;
 
 public class TableUI : MonoBehaviour
 {
-    public Text orderFoodText1;
-    public Text orderDrinkText1;
-    public Text orderFoodText2;
-    public Text orderDrinkText2;
+    public Text tableNumberText;
     public List<Text> ordertexts;
     internal float xPositionTable;
     public CameraControls cameraControls;
@@ -34,6 +31,7 @@ public class TableUI : MonoBehaviour
 
     public void RequestOrder()
     {
+        tableNumberText.enabled = false;
         RequestPlayerImage.enabled = true;
     }
 
@@ -49,12 +47,12 @@ public class TableUI : MonoBehaviour
         {
             orderText.text = "";
         }
+        tableNumberText.enabled = true;
     }
 
     public void OnClick()
     {
         cameraControls.SnapToLocation(xPositionTable);
-        Debug.Log("Table button pressed");
     }
 
     IEnumerator RevealNotedOrders(List<Order> orders)

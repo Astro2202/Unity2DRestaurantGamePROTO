@@ -5,12 +5,10 @@ using UnityEngine.UI;
 
 public class ClientGroup : MonoBehaviour
 {
-    public Table assignedTable;
     private bool allClientsSeated = false;
     private bool finished = false;
     internal System.Random random;
     internal List<Client> clients;
-    private int patience = 15; //default = 200
     // Start is called before the first frame update
     void Start()
     {
@@ -29,41 +27,44 @@ public class ClientGroup : MonoBehaviour
             return;
 
         }
-
-        if (!allClientsSeated)
-        {
-            ManageChairs();
-        }
-        else if(!assignedTable.HasOrders())
-        {
-            ManageOrders();
-        }
-
-        if (assignedTable.HasOrdersTaken())
-        {
-            foreach(Client client in clients)
-            {
-                client.OrderIsTaken();
-            }
-        }
-
-        if(patience <= 0)
-        {
-            FinishVisit();
-        }
     }
 
-    private void ManageOrders()
+    public bool HasPatience()
+    {
+        foreach(Client client in clients)
+        {
+            if(client.patience <= 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool AllClientsSeated()
+    {
+        return allClientsSeated;
+    }
+
+    public List<Order> GetOrders()
     {
         List<Order> orders = new List<Order>();
         foreach (Client c in clients)
         {
-            orders.Add(c.TakeOrder());
+            orders.Add(c.GetOrder());
         }
-        assignedTable.SetOrder(orders);
+        return orders;
     }
 
-    private void ManageChairs()
+    public void ConfirmOrder()
+    {
+        foreach(Client c in clients)
+        {
+            c.ConfirmOrder();
+        }
+    }
+
+    public void ManageChairs(List<Chair> chairs)
     {
         int seatedClients = 0;
 
@@ -71,7 +72,7 @@ public class ClientGroup : MonoBehaviour
         {
             if (!client.assignedChair)
             {
-                AssignChair(client);
+                AssignChair(client, chairs);
             }
             else if (client.IsSeated())
             {
@@ -82,16 +83,15 @@ public class ClientGroup : MonoBehaviour
         if(seatedClients == clients.Count)
         {
             allClientsSeated = true;
-            StartCoroutine(PatienceCalculation());
         }
     }
 
-    private bool AssignChair(Client client)
+    private bool AssignChair(Client client, List<Chair> chairs)
     {
-        if(assignedTable.availableChairs.Count > 0)
+        if(chairs.Count > 0)
         {
-            Chair chair = assignedTable.availableChairs[random.Next(assignedTable.availableChairs.Count)];
-            assignedTable.availableChairs.Remove(chair);
+            Chair chair = chairs[random.Next(chairs.Count)];
+            chairs.Remove(chair);
             client.assignedChair = chair;
             return true;
         }
@@ -101,35 +101,31 @@ public class ClientGroup : MonoBehaviour
         }
     }
 
-    private void FinishVisit()
+    public void FinishVisit()
     {
-        StopCoroutine(PatienceCalculation());
-
         foreach(Client client in clients)
         {
             client.FinishVisit();
         }
-
         allClientsSeated = false;
         finished = true;
-
-        assignedTable.Reset();
     }
 
-    IEnumerator PatienceCalculation()
+    public void PausePatience(float seconds)
     {
-        while (allClientsSeated)
+        StartCoroutine(PausePatienceCalculation(seconds));
+    }
+
+    IEnumerator PausePatienceCalculation(float seconds)
+    {
+        foreach(Client client in clients)
         {
-            if(patience > 0)
-            {
-                patience--;
-            }
-            //Debug.Log(patience);
-            foreach(Client c in clients)
-            {
-                c.patience = patience;
-            }
-            yield return new WaitForSeconds(1);
+            client.canLosePatience = false;
+        }
+        yield return new WaitForSeconds(seconds);
+        foreach (Client client in clients)
+        {
+            client.canLosePatience = true;
         }
     }
 }
