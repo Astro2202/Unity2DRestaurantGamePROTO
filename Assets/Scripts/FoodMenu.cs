@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FoodMenu : MonoBehaviour
 {
-    public GameObject foodMenuUI;
+    //public GameObject foodMenuUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,11 +19,11 @@ public class FoodMenu : MonoBehaviour
 
     internal void OpenFoodMenu()
     {
-        foodMenuUI.SetActive(true);
+        gameObject.SetActive(true);
     }
 
     internal void CloseFoodMenu()
     {
-        foodMenuUI.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

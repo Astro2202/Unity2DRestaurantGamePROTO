@@ -24,6 +24,7 @@ public class Restaurant : MonoBehaviour
         }
         GetComponentInChildren<Kitchen>().player = GetComponentInChildren<Player>();
         GetComponentInChildren<Trashcan>().player = GetComponentInChildren<Player>();
+        GetComponentInChildren<Fridge>().player = GetComponentInChildren<Player>();
         StartCoroutine(ClientSpawner());
     }
 

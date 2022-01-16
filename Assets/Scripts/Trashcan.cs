@@ -33,7 +33,6 @@ public class Trashcan : MonoBehaviour, IInteractable
 
     private void OnMouseDown()
     {
-        Debug.Log("Clicked on trashcan");
         player.GoInteract(this);
     }
 }

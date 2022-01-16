@@ -5,7 +5,7 @@ using UnityEngine;
 public class Kitchen : MonoBehaviour, IInteractable
 {
     internal Player player;
-    public Sprite[] spriteArray;
+    public Sprite[] foodSpriteArray;
     public Food foodPrefab;
     private const int FOODPHASES = 3;
     internal bool foodReady = false;
@@ -45,13 +45,13 @@ public class Kitchen : MonoBehaviour, IInteractable
     public void CookSpaghetti()
     {
         Food food = Instantiate(foodPrefab);
-        food.foodType = Consumables.FoodType.Spaghetti;
+        food.foodType = Consumables.FoodType.Pasta;
         food.transform.parent = transform;
         List<Sprite> sprites = new List<Sprite>();
-        sprites.Add(spriteArray[0]);
+        sprites.Add(foodSpriteArray[0]);
         for (int i = 1; i < (FOODPHASES + 1); i++)
         {
-            sprites.Add(spriteArray[i]);
+            sprites.Add(foodSpriteArray[i]);
         }
         food.spriteArray = sprites.ToArray();
         food.NextPhase();
@@ -63,10 +63,10 @@ public class Kitchen : MonoBehaviour, IInteractable
         food.foodType = Consumables.FoodType.Steak;
         food.transform.parent = transform;
         List<Sprite> sprites = new List<Sprite>();
-        sprites.Add(spriteArray[0]);
+        sprites.Add(foodSpriteArray[0]);
         for (int i = 1; i < (FOODPHASES + 1); i++)
         {
-            sprites.Add(spriteArray[i + 3]);
+            sprites.Add(foodSpriteArray[i + 3]);
         }
         food.spriteArray = sprites.ToArray();
         food.NextPhase();

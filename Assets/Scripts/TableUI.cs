@@ -53,7 +53,6 @@ public class TableUI : MonoBehaviour
     public void OnClick()
     {
         cameraControls.SnapToLocation(xPositionTable);
-        Debug.Log("Table button pressed");
     }
 
     IEnumerator RevealNotedOrders(List<Order> orders)

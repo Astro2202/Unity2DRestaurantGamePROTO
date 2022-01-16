@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class InteractableEnum : MonoBehaviour
 {
-    public enum Interactables { Table, Kitchen, Trashcan }
+    public enum Interactables { Table, Kitchen, Trashcan, Fridge }
 }

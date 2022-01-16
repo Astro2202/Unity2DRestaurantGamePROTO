@@ -71,6 +71,9 @@
     <Compile Include="Assets\Scripts\Client.cs" />
     <Compile Include="Assets\Scripts\Trashcan.cs" />
     <Compile Include="Assets\Scripts\TableUI.cs" />
+    <Compile Include="Assets\Scripts\Fridge.cs" />
+    <Compile Include="Assets\Scripts\Drink.cs" />
+    <Compile Include="Assets\Scripts\DrinkMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -14,8 +14,8 @@ public class Tray : MonoBehaviour
     private Vector2 middleBackPositionFlipped;
     internal Food rightSlot;
     internal Food leftSlot;
-    internal Food middleFrontSlot;
-    internal Food middleBackSlot;
+    internal Drink middleFrontSlot;
+    internal Drink middleBackSlot;
     internal bool flipped = false;
     // Start is called before the first frame update
     void Start()
@@ -33,10 +33,12 @@ public class Tray : MonoBehaviour
             if (flipped)
             {
                 rightSlot.transform.position = rightPositionFlipped;
+                rightSlot.spriteRenderer.sortingOrder = 25;
             }
             else
             {
                 rightSlot.transform.position = rightPosition;
+                rightSlot.spriteRenderer.sortingOrder = 30;
             }
         }
         if (leftSlot)
@@ -44,20 +46,48 @@ public class Tray : MonoBehaviour
             if (flipped)
             {
                 leftSlot.transform.position = leftPositionFlipped;
+                leftSlot.spriteRenderer.sortingOrder = 30;
             }
             else
             {
                 leftSlot.transform.position = leftPosition;
+                leftSlot.spriteRenderer.sortingOrder = 25;
+            }
+        }
+        if (middleBackSlot)
+        {
+            if (flipped)
+            {
+                middleBackSlot.transform.position = middleBackPositionFlipped;
+            }
+            else
+            {
+                middleBackSlot.transform.position= middleBackPosition;
+            }
+        }
+        if (middleFrontSlot)
+        {
+            if (flipped)
+            {
+                middleFrontSlot.transform.position = middleFrontPositionFlipped;
+            }
+            else
+            {
+                middleFrontSlot.transform.position = middleFrontPosition;
             }
         }
     }
 
     public void UpdatePositions()
     {
-        rightPosition = new Vector2(transform.position.x + 0.35f, transform.position.y + 0.2f);
-        rightPositionFlipped = new Vector2(transform.position.x - 0.35f, transform.position.y - 0.1f);
-        leftPosition = new Vector2(transform.position.x + 0.35f, transform.position.y - 0.1f);
-        leftPositionFlipped = new Vector2(transform.position.x - 0.35f, transform.position.y + 0.2f);
+        rightPosition = new Vector2(transform.position.x + 0.4f, transform.position.y - 0.1f);
+        rightPositionFlipped = new Vector2(transform.position.x - 0.4f, transform.position.y + 0.2f);
+        leftPosition = new Vector2(transform.position.x + 0.4f, transform.position.y + 0.2f);
+        leftPositionFlipped = new Vector2(transform.position.x - 0.4f, transform.position.y - 0.1f);
+        middleBackPosition = new Vector2(transform.position.x + 0.25f, transform.position.y);
+        middleBackPositionFlipped = new Vector2(transform.position.x - 0.25f, transform.position.y);
+        middleFrontPosition = new Vector2(transform.position.x + 0.5f, transform.position.y);
+        middleFrontPositionFlipped = new Vector2(transform.position.x - 0.5f, transform.position.y);
     }
 
     public bool PutFood(Food food)
@@ -66,14 +96,14 @@ public class Tray : MonoBehaviour
         {
             rightSlot = food;
             food.transform.parent = transform;
-            food.spriteRenderer.sortingOrder = 30;
+            //food.spriteRenderer.sortingOrder = 30;
             return true;
         }
         else if (!leftSlot)
         {
             leftSlot = food;
             food.transform.parent = transform;
-            food.spriteRenderer.sortingOrder = 30;
+            //food.spriteRenderer.sortingOrder = 30;
             return true;
         }
         else
@@ -82,13 +112,20 @@ public class Tray : MonoBehaviour
         }
     }
 
-    public bool PutDrink(Food drink)
+    public bool PutDrink(Drink drink)
     {
         if (!middleBackSlot)
         {
             middleBackSlot = drink;
             drink.transform.parent = transform;
-            drink.spriteRenderer.sortingOrder=30;
+            drink.spriteRenderer.sortingOrder = 27;
+            return true;
+        }
+        else if (!middleFrontSlot)
+        {
+            middleFrontSlot = drink;
+            drink.transform.parent = transform;
+            drink.spriteRenderer.sortingOrder = 27;
             return true;
         }
         else

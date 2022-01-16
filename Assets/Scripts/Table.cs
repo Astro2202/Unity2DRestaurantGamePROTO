@@ -57,16 +57,10 @@ public class Table : MonoBehaviour, IInteractable
 
     public void Reset()
     {
-        Debug.Log("Reset table");
         orders.Clear();
         ResetAvailableChairs();
-
-        if (clientGroup)
-        {
-            clientGroup.FinishVisit();
-            clientGroup = null;
-        }
-        
+        clientGroup.FinishVisit();
+        clientGroup = null;
         transform.parent.GetComponent<Restaurant>().availableTables.Add(this);
         hasOrders = false;
         hasOrdersTaken = false;

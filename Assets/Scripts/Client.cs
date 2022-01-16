@@ -13,7 +13,7 @@ public class Client : MonoBehaviour
     private float speed = 3.0f;
     internal int patience = 10; // Default = 200(s)
     private const int ADDED_PATIENCE_AT_INTERACT = 10; // Default value to be chosen
-    private const int X_POSITION_TO_DESTOY = -12;
+    private const int X_POSITION_TO_DESPAWN = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
     internal Chair assignedChair;
@@ -109,7 +109,7 @@ public class Client : MonoBehaviour
         Vector2 movePos = new Vector2(transform.position.x - 1f * step, transform.position.y); //-1f indicating direction to the left
         transform.position = movePos;
 
-        if (transform.position.x < X_POSITION_TO_DESTOY)
+        if (transform.position.x < X_POSITION_TO_DESPAWN)
         {
             transform.parent.GetComponent<ClientGroup>().clients.Remove(this);
             Destroy(gameObject);

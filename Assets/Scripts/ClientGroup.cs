@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ClientGroup : MonoBehaviour
 {
-    //public Table assignedTable;
     private bool allClientsSeated = false;
     private bool finished = false;
     internal System.Random random;

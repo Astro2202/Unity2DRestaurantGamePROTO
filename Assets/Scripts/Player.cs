@@ -8,11 +8,13 @@ public class Player : MonoBehaviour
     internal float xTarget;
     private float speed = 5.0f;
     private bool interacting = false;
+    private bool keepInteracting = false;
     private IInteractable interactable;
     private const float DEFAULT_INTERACT_TIME = 0.5f;
     internal float interactDuration = DEFAULT_INTERACT_TIME;
     public Animator animator;
     public FoodMenu foodMenu;
+    public DrinkMenu drinkMenu;
     private List<Food> carriedFood;
     public Tray trayPrefab;
     private Tray tray;
@@ -115,6 +117,15 @@ public class Player : MonoBehaviour
                     foodMenu.OpenFoodMenu();
                 }
                 break;
+            case InteractableEnum.Interactables.Fridge:
+                keepInteracting = true;
+                Fridge fridge = (Fridge)interactable;
+                if (!drinkMenu.player)
+                {
+                    drinkMenu.player = this;
+                }
+                drinkMenu.OpenDrinkMenu();
+                break;
             case InteractableEnum.Interactables.Trashcan:
                 Trashcan trashcan = (Trashcan)interactable;
                 tray.RemoveContent();
@@ -129,6 +140,16 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void SetDrink(Drink drink)
+    {
+        if (!tray.PutDrink(drink))
+        {
+            Debug.Log("Tray full!");
+        }
+        Debug.Log("Drink set");
+        keepInteracting = false;
+    }
+
     private bool AtTarget()
     {
         return Mathf.Abs(transform.position.x - xTarget) <= 0.01f;
@@ -136,11 +157,18 @@ public class Player : MonoBehaviour
 
     IEnumerator InteractDurationLogic(float duration)
     {
-        animator.SetBool("interacting", true);
+        animator.SetBool("walking", false);
+        interacting = true;
 
-        yield return new WaitForSeconds(duration);
+        do
+        {
+            animator.SetBool("interacting", true);
 
-        interacting = false;
+            yield return new WaitForSeconds(duration);
+        }
+        while (keepInteracting);
+
         animator.SetBool("interacting", false);
+        interacting = false;
     }
 }
