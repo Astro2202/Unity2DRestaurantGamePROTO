@@ -32,6 +32,92 @@ public class Table : MonoBehaviour, IInteractable
         }
     }
 
+    public Order GetOrderWithFood(Food food)
+    {
+        foreach(Order order in orders)
+        {
+            if(order.FoodType == food.foodType)
+            {
+                if (!order.FoodOrderCompleted)
+                {
+                    return order;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public Order GetOrderWithDrink(Drink drink)
+    {
+        foreach(Order order in orders)
+        {
+            if(order.DrinkType == drink.drinkType)
+            {
+                if (!order.DrinkOrderCompleted)
+                {
+                    return order;
+                }
+            }
+        }
+        return null;
+    }
+
+    public bool SetFood(Order order, Food food)
+    {
+        if(order.FoodType == food.foodType)
+        {
+            Client client = clientGroup.SetFood(food);
+            if (client != null)
+            {
+                order.FoodOrderCompleted = true;
+                food.transform.parent = transform;
+                food.spriteRenderer.sortingOrder = 2;
+                if (client.IsFlipped())
+                {
+                    food.transform.position = new Vector2(transform.position.x + 0.75f, transform.position.y + 0.5f);
+                }
+                else
+                {
+                    food.transform.position = new Vector2(transform.position.x - 0.75f, transform.position.y + 0.5f);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public bool SetDrink(Order order, Drink drink)
+    {
+        if (order.DrinkType == drink.drinkType)
+        {
+            Client client = clientGroup.SetDrink(drink);
+            if (client != null)
+            {
+                order.DrinkOrderCompleted = true;
+                drink.transform.parent = transform;
+                drink.spriteRenderer.sortingOrder = 2;
+                if (client.IsFlipped())
+                {
+                    drink.transform.position = new Vector2(transform.position.x + 0.3f, transform.position.y + 0.6f);
+                }
+                else
+                {
+                    drink.transform.position = new Vector2(transform.position.x - 0.3f, transform.position.y + 0.4f);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
     private void ManageClientGroup()
     {
         if (!clientGroup.AllClientsSeated())
@@ -87,6 +173,11 @@ public class Table : MonoBehaviour, IInteractable
     }
 
     public List<Order> GetOrders()
+    {
+        return orders;
+    }
+
+    public List<Order> TakeOrders()
     {
         clientGroup.PausePatience(GetInteractableDuration());
         hasOrdersTaken = true;

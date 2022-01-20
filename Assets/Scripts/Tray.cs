@@ -134,6 +134,62 @@ public class Tray : MonoBehaviour
         }
     }
 
+    public void RemoveFood(Food food)
+    {
+        if(rightSlot == food)
+        {
+            rightSlot = null;
+        }
+        else if(leftSlot == food)
+        {
+            leftSlot = null;
+        }
+    }
+
+    public void RemoveDrink(Drink drink)
+    {
+        if(middleBackSlot == drink)
+        {
+            middleBackSlot = null;
+        }
+        else if(middleFrontSlot == drink)
+        {
+            middleFrontSlot = null;
+        }
+    }
+
+    public bool HasContent()
+    {
+        return rightSlot || leftSlot || middleBackSlot || middleFrontSlot;
+    }
+
+    public List<Food> GetFoods()
+    {
+        List<Food> foodOnTray = new List<Food>();
+        if (rightSlot)
+        {
+            foodOnTray.Add(rightSlot);
+        }
+        if (leftSlot)
+        {
+            foodOnTray.Add(leftSlot);
+        }
+        return foodOnTray;
+    }
+    public List<Drink> GetDrinks()
+    {
+        List<Drink> drinksOnTray = new List<Drink>();
+        if (middleBackSlot)
+        {
+            drinksOnTray.Add(middleBackSlot);
+        }
+        if (middleFrontSlot)
+        {
+            drinksOnTray.Add(middleFrontSlot);
+        }
+        return drinksOnTray;
+    }
+
     public void RemoveContent()
     {
         if (rightSlot)

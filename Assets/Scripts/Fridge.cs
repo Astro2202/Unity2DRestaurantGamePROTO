@@ -27,7 +27,7 @@ public class Fridge : MonoBehaviour, IInteractable
 
     public float GetInteractableDuration()
     {
-        return 3;
+        return 0.5f;
     }
 
     public float GetXPosition()

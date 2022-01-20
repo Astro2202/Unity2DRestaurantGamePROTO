@@ -8,6 +8,7 @@ public class Food : MonoBehaviour
     internal Sprite[] spriteArray;
     internal Consumables.FoodType foodType;
     private int phase = 0;
+    private const int LAST_PHASE = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,12 +18,25 @@ public class Food : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Debug.Log(transform.position);
     }
 
     public void NextPhase()
     {
-        phase++;
-        spriteRenderer.sprite = spriteArray[phase];
+        if(!(phase == LAST_PHASE))
+        {
+            phase++;
+            spriteRenderer.sprite = spriteArray[phase];
+        }
+    }
+
+    public int GetPhasesCount()
+    {
+        return LAST_PHASE;
+    }
+
+    public int GetPhase()
+    {
+        return phase;
     }
 }

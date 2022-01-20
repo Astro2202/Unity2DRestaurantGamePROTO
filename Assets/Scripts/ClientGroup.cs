@@ -25,8 +25,34 @@ public class ClientGroup : MonoBehaviour
                 Destroy(gameObject);
             }
             return;
-
         }
+
+    }
+
+    public Client SetFood(Food food)
+    {
+        foreach(Client client in clients)
+        {
+            if (!client.HasFood() && client.GetOrder().FoodType == food.foodType)
+            {
+                client.SetFood(food);
+                return client;
+            }
+        }
+        return null;
+    }
+    
+    public Client SetDrink(Drink drink)
+    {
+        foreach(Client client in clients)
+        {
+            if(!client.HasDrink() && client.GetOrder().DrinkType == drink.drinkType)
+            {
+                client.SetDrink(drink);
+                return client;
+            }
+        }
+        return null;
     }
 
     public bool HasPatience()

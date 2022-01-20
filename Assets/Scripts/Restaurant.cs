@@ -65,7 +65,7 @@ public class Restaurant : MonoBehaviour
                 table.AssignClientGroup(clientGroup);
                 clientGroups.Add(clientGroup);
             }
-            yield return new WaitForSeconds(10);
+            yield return new WaitForSeconds(40);
         }
     }
 }

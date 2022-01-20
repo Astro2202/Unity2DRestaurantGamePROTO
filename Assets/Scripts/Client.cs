@@ -9,10 +9,12 @@ public class Client : MonoBehaviour
     private bool wantsToOrder = false;
     private bool finished = false;
     private bool flipX = false;
+    private bool eating = false;
+    //private bool drinking = false;
     internal bool canLosePatience = true;
     private float speed = 3.0f;
-    internal int patience = 10; // Default = 200(s)
-    private const int ADDED_PATIENCE_AT_INTERACT = 10; // Default value to be chosen
+    internal int patience = 200; // Default = 200(s)
+    private const int ADDED_PATIENCE_AT_INTERACT = 50; // Default value to be chosen
     private const int X_POSITION_TO_DESPAWN = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
@@ -21,6 +23,9 @@ public class Client : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     internal System.Random random;
     private Order order;
+    private Food food;
+    private Drink drink;
+    private Serving serving;
     void Start()
     {
 
@@ -48,6 +53,43 @@ public class Client : MonoBehaviour
         animator.SetBool("seated", seated);
         animator.SetInteger("patience", patience);
         animator.SetBool("order", wantsToOrder);
+        animator.SetBool("eating", eating);
+        animator.SetBool("hasDrink", drink);
+    }
+
+    public void SetFood(Food food)
+    {
+        this.food = food;
+        if (drink)
+        {
+            canLosePatience = false;
+        }
+        StartCoroutine(Eating());
+    }
+
+    public bool HasFood()
+    {
+        return food;
+    }
+
+    public void SetDrink(Drink drink)
+    {
+        this.drink = drink;
+        if (food)
+        {
+            canLosePatience = false;
+        }
+        StartCoroutine(Drinking());
+    }
+
+    public bool HasDrink()
+    {
+        return drink;
+    }
+    
+    public bool IsFlipped()
+    {
+        return flipX;
     }
 
     private void MoveToChair()
@@ -60,9 +102,10 @@ public class Client : MonoBehaviour
         if (Mathf.Abs(transform.position.x - assignedChair.transform.position.x) <= CHAIR_POSITION_ACCURACY)
         {
             seated = true;
-            transform.position = new Vector2(assignedChair.transform.position.x, transform.position.y + Y_FLOOR_CHAIR_DIFFERENCE);
+            transform.position = new Vector2(assignedChair.transform.position.x + 0.7f, transform.position.y + Y_FLOOR_CHAIR_DIFFERENCE);
             if(assignedChair.transform.position.x > assignedChair.transform.parent.GetComponentInChildren<Table>().transform.position.x)
             {
+                transform.position = new Vector2(assignedChair.transform.position.x - 0.7f, transform.position.y);
                 flipX = true;
             }
         }
@@ -118,6 +161,7 @@ public class Client : MonoBehaviour
     public void FinishVisit()
     {
         wantsToOrder = false;
+        eating = false;
         seated = false;
         transform.position = new Vector2(transform.position.x, transform.position.y - Y_FLOOR_CHAIR_DIFFERENCE);
         flipX = true;
@@ -138,5 +182,43 @@ public class Client : MonoBehaviour
             }
             yield return new WaitForSeconds(1);
         }
+    }
+
+    IEnumerator Eating()
+    {
+        int phaseduration = random.Next(10, 15);
+        eating = true;
+
+        do
+        {
+            if (food.GetPhase() < food.GetPhasesCount())
+            {
+                yield return new WaitForSeconds(phaseduration);
+                food.NextPhase();
+                Debug.Log(food.GetPhase());
+            }
+            else
+            {
+                eating = false;
+            }
+            yield return null;
+        }
+        while (eating);
+    }
+
+    IEnumerator Drinking()
+    {
+        do
+        {
+            if (random.Next(0, 10) == 0)
+            {
+                if (drink.TakeSip())
+                {
+                    animator.SetTrigger("drink");
+                }
+            }
+            yield return new WaitForSeconds(1);
+        }
+        while (drink.GetPhase() < drink.GetPhasesCount());
     }
 }

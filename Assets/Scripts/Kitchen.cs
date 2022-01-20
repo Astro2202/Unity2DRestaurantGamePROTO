@@ -34,7 +34,7 @@ public class Kitchen : MonoBehaviour, IInteractable
 
     public float GetInteractableDuration()
     {
-        return 3;
+        return 1;
     }
 
     public float GetXPosition()

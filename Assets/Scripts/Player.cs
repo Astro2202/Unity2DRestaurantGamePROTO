@@ -132,10 +132,38 @@ public class Player : MonoBehaviour
                 break;
             case InteractableEnum.Interactables.Table:
                 Table table = (Table)interactable;
-                if(!table.HasOrdersTaken() && table.HasOrders())
+                if (table.HasOrders())
                 {
-                    table.GetOrders();
+                    if (!table.HasOrdersTaken())
+                    {
+                        table.TakeOrders();
+                    }
+                    else
+                    {
+                        if (tray.HasContent())
+                        {
+                            foreach (Food food in tray.GetFoods())
+                            {
+                                Order order = table.GetOrderWithFood(food);
+                                if (order != null)
+                                {
+                                    tray.RemoveFood(food);
+                                    table.SetFood(order, food);
+                                }
+                            }
+                            foreach (Drink drink in tray.GetDrinks())
+                            {
+                                Order order = table.GetOrderWithDrink(drink);
+                                if (order != null)
+                                {
+                                    tray.RemoveDrink(drink);
+                                    table.SetDrink(order, drink);
+                                }
+                            }
+                        }
+                    }
                 }
+                
                 break;
         }
     }
