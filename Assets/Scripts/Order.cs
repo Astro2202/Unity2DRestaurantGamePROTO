@@ -19,8 +19,8 @@ public class Order
     public bool DrinkOrderCompleted
     {
         get { return drinkOrderCompleted; }
-        set 
-        { 
+        set
+        {
             drinkOrderCompleted = value;
             if (foodOrderCompleted)
             {
@@ -34,7 +34,7 @@ public class Order
     public bool FoodOrderCompleted
     {
         get { return foodOrderCompleted; }
-        set 
+        set
         {
             foodOrderCompleted = value;
             if (drinkOrderCompleted)

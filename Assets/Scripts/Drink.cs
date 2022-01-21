@@ -13,13 +13,13 @@ public class Drink : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public void NextPhase()
     {
@@ -29,30 +29,22 @@ public class Drink : MonoBehaviour
             spriteRenderer.sprite = spriteArray[phase];
         }
     }
-    public int GetPhasesCount()
-    {
-        return LAST_PHASE;
-    }
 
-    public int GetPhase()
+    public bool Empty()
     {
-        return phase;
+        return phase >= LAST_PHASE;
     }
 
     public bool TakeSip()
     {
-        if(sipsRemaining > 0)
+        if (sipsRemaining > 0)
         {
             sipsRemaining--;
-            if(sipsRemaining == 0)
+            if (sipsRemaining <= 0)
             {
                 NextPhase();
-                return false;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         else
         {

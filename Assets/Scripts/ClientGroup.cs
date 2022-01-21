@@ -29,6 +29,21 @@ public class ClientGroup : MonoBehaviour
 
     }
 
+    public bool VisitCompleted()
+    {
+        bool visitCompleted = true;
+
+        foreach(Client client in clients)
+        {
+            if (!client.IsVisitCompleted())
+            {
+                visitCompleted = false;
+            }
+        }
+
+        return visitCompleted;
+    }
+
     public Client SetFood(Food food)
     {
         foreach(Client client in clients)

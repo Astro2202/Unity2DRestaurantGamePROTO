@@ -12,7 +12,7 @@ public class Food : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -23,20 +23,15 @@ public class Food : MonoBehaviour
 
     public void NextPhase()
     {
-        if(!(phase == LAST_PHASE))
+        if (!(phase == LAST_PHASE))
         {
             phase++;
             spriteRenderer.sprite = spriteArray[phase];
         }
     }
 
-    public int GetPhasesCount()
+    public bool Empty()
     {
-        return LAST_PHASE;
-    }
-
-    public int GetPhase()
-    {
-        return phase;
+        return phase >= LAST_PHASE;
     }
 }

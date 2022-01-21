@@ -34,9 +34,9 @@ public class Table : MonoBehaviour, IInteractable
 
     public Order GetOrderWithFood(Food food)
     {
-        foreach(Order order in orders)
+        foreach (Order order in orders)
         {
-            if(order.FoodType == food.foodType)
+            if (order.FoodType == food.foodType)
             {
                 if (!order.FoodOrderCompleted)
                 {
@@ -46,12 +46,12 @@ public class Table : MonoBehaviour, IInteractable
         }
         return null;
     }
-    
+
     public Order GetOrderWithDrink(Drink drink)
     {
-        foreach(Order order in orders)
+        foreach (Order order in orders)
         {
-            if(order.DrinkType == drink.drinkType)
+            if (order.DrinkType == drink.drinkType)
             {
                 if (!order.DrinkOrderCompleted)
                 {
@@ -64,7 +64,7 @@ public class Table : MonoBehaviour, IInteractable
 
     public bool SetFood(Order order, Food food)
     {
-        if(order.FoodType == food.foodType)
+        if (order.FoodType == food.foodType)
         {
             Client client = clientGroup.SetFood(food);
             if (client != null)
@@ -124,13 +124,17 @@ public class Table : MonoBehaviour, IInteractable
         {
             clientGroup.ManageChairs(availableChairs);
         }
-        else if(!hasOrders)
+        else if (!hasOrders)
         {
             orders = clientGroup.GetOrders();
             hasOrders = true;
             ui.RequestOrder();
         }
         if (!clientGroup.HasPatience())
+        {
+            Reset();
+        }
+        else if (clientGroup.VisitCompleted())
         {
             Reset();
         }

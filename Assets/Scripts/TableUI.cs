@@ -14,13 +14,13 @@ public class TableUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void NoteOrders(List<Order> orders)
@@ -43,7 +43,7 @@ public class TableUI : MonoBehaviour
     public void Reset()
     {
         StopRequestOrder();
-        foreach(Text orderText in ordertexts)
+        foreach (Text orderText in ordertexts)
         {
             orderText.text = "";
         }
@@ -57,7 +57,8 @@ public class TableUI : MonoBehaviour
 
     IEnumerator RevealNotedOrders(List<Order> orders)
     {
-        for (int i = 0; i < orders.Count; i++) {
+        for (int i = 0; i < orders.Count; i++)
+        {
             ordertexts[i * 2].text = orders[i].FoodType.ToString();
             yield return new WaitForSeconds(1);
             ordertexts[(i * 2) + 1].text = orders[i].DrinkType.ToString();

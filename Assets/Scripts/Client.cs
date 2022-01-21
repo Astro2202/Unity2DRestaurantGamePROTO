@@ -10,11 +10,13 @@ public class Client : MonoBehaviour
     private bool finished = false;
     private bool flipX = false;
     private bool eating = false;
-    //private bool drinking = false;
+    private bool eatingCompleted = false;
+    private bool drinkingCompleted = false;
+    private bool visitCompleted = false;
     internal bool canLosePatience = true;
     private float speed = 3.0f;
-    internal int patience = 200; // Default = 200(s)
-    private const int ADDED_PATIENCE_AT_INTERACT = 50; // Default value to be chosen
+    internal int patience = 60; // Default = 60(s)
+    private const int ADDED_PATIENCE_AT_INTERACT = 30; // Default value to be chosen
     private const int X_POSITION_TO_DESPAWN = -12;
     private const float Y_FLOOR_CHAIR_DIFFERENCE = 0.3f;
     private const float CHAIR_POSITION_ACCURACY = 0.01f;
@@ -86,7 +88,7 @@ public class Client : MonoBehaviour
     {
         return drink;
     }
-    
+
     public bool IsFlipped()
     {
         return flipX;
@@ -103,7 +105,7 @@ public class Client : MonoBehaviour
         {
             seated = true;
             transform.position = new Vector2(assignedChair.transform.position.x + 0.7f, transform.position.y + Y_FLOOR_CHAIR_DIFFERENCE);
-            if(assignedChair.transform.position.x > assignedChair.transform.parent.GetComponentInChildren<Table>().transform.position.x)
+            if (assignedChair.transform.position.x > assignedChair.transform.parent.GetComponentInChildren<Table>().transform.position.x)
             {
                 transform.position = new Vector2(assignedChair.transform.position.x - 0.7f, transform.position.y);
                 flipX = true;
@@ -114,6 +116,11 @@ public class Client : MonoBehaviour
     public bool IsSeated()
     {
         return seated;
+    }
+
+    public bool IsVisitCompleted()
+    {
+        return visitCompleted;
     }
 
     public Order SetOrder()
@@ -186,16 +193,15 @@ public class Client : MonoBehaviour
 
     IEnumerator Eating()
     {
-        int phaseduration = random.Next(10, 15);
+        int phaseduration = random.Next(15, 20);
         eating = true;
 
         do
         {
-            if (food.GetPhase() < food.GetPhasesCount())
+            if (!food.Empty())
             {
                 yield return new WaitForSeconds(phaseduration);
                 food.NextPhase();
-                Debug.Log(food.GetPhase());
             }
             else
             {
@@ -204,6 +210,11 @@ public class Client : MonoBehaviour
             yield return null;
         }
         while (eating);
+
+        if (drinkingCompleted)
+        {
+            visitCompleted = true;
+        }
     }
 
     IEnumerator Drinking()
@@ -219,6 +230,11 @@ public class Client : MonoBehaviour
             }
             yield return new WaitForSeconds(1);
         }
-        while (drink.GetPhase() < drink.GetPhasesCount());
+        while (!drink.Empty());
+
+        if (eatingCompleted)
+        {
+            visitCompleted = true;
+        }
     }
 }

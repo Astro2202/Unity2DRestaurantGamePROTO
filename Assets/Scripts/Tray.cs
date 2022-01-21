@@ -20,7 +20,7 @@ public class Tray : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
 
     }
 
@@ -62,7 +62,7 @@ public class Tray : MonoBehaviour
             }
             else
             {
-                middleBackSlot.transform.position= middleBackPosition;
+                middleBackSlot.transform.position = middleBackPosition;
             }
         }
         if (middleFrontSlot)
@@ -136,11 +136,11 @@ public class Tray : MonoBehaviour
 
     public void RemoveFood(Food food)
     {
-        if(rightSlot == food)
+        if (rightSlot == food)
         {
             rightSlot = null;
         }
-        else if(leftSlot == food)
+        else if (leftSlot == food)
         {
             leftSlot = null;
         }
@@ -148,11 +148,11 @@ public class Tray : MonoBehaviour
 
     public void RemoveDrink(Drink drink)
     {
-        if(middleBackSlot == drink)
+        if (middleBackSlot == drink)
         {
             middleBackSlot = null;
         }
-        else if(middleFrontSlot == drink)
+        else if (middleFrontSlot == drink)
         {
             middleFrontSlot = null;
         }

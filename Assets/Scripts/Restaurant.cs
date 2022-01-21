@@ -31,7 +31,7 @@ public class Restaurant : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     IEnumerator ClientSpawner()
@@ -50,7 +50,6 @@ public class Restaurant : MonoBehaviour
 
                 for (int i = 0; i < random.Next(1, 3); i++)
                 {
-                    
                     //Debug.Log("Creating client " + i + " for clientgroup");
                     Client client = Instantiate(clientPrefab);
                     client.transform.parent = clientGroup.transform;
@@ -58,7 +57,6 @@ public class Restaurant : MonoBehaviour
                     client.random = random;
                     newClients.Add(client);
                 }
-                
                 clientGroup.clients = newClients;
                 clientGroup.random = random;
                 clientGroup.transform.parent = table.transform;

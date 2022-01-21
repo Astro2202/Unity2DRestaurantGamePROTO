@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
             animator.SetBool("walking", true);
             FlipX();
             GoToTargetLocation();
-        }  
+        }
 
         if (interacting)
         {
@@ -163,7 +163,6 @@ public class Player : MonoBehaviour
                         }
                     }
                 }
-                
                 break;
         }
     }
